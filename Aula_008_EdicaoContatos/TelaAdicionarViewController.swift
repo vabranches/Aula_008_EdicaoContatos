@@ -1,26 +1,50 @@
-//
-//  TelaAdicionarViewController.swift
-//  Aula_008_EdicaoContatos
-//
-//  Created by Swift on 26/01/17.
-//  Copyright © 2017 Swift. All rights reserved.
-//
-
 import UIKit
+import ContactsUI
 
-class TelaAdicionarViewController: UIViewController {
+class TelaAdicionarViewController: UIViewController, CNContactPickerDelegate {
 
+    //MARK: Outlets
+    @IBOutlet weak var textFieldNome: UITextField!
+    @IBOutlet weak var textFieldSobrenome: UITextField!
+    @IBOutlet weak var textFieldTelefone: UITextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
-    }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
+    //MARK: Actions
+    @IBAction func adicionar(_ sender: UIBarButtonItem) {
+        if !((textFieldNome.text?.isEmpty)! || (textFieldSobrenome.text?.isEmpty)! || (textFieldTelefone.text?.isEmpty)!) {
+            
+            let nome = textFieldNome.text
+            let sobrenome = textFieldSobrenome.text
+            let telefone = textFieldTelefone.text
+            
+            let novoContato = CNMutableContact()
+            novoContato.givenName = nome!
+            novoContato.familyName = sobrenome!
+            novoContato.phoneNumbers = [CNLabeledValue(label: "Mobile", value: CNPhoneNumber(stringValue: telefone!))]
+            
+            let salvarRequisao = CNSaveRequest()
+            salvarRequisao.add(novoContato, toContainerWithIdentifier: nil)
+            
+            let meuContactStore = CNContactStore()
+            
+            do {
+                try meuContactStore.execute(salvarRequisao)
+            } catch{}
+            
+            textFieldNome.text = ""
+            textFieldSobrenome.text = ""
+            textFieldTelefone.text = ""
+        }
+        
+        
+    }
+    
+ 
 
     /*
     // MARK: - Navigation
